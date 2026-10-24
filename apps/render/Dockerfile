@@ -18,7 +18,7 @@ COPY apps/web/package.json ./apps/web/package.json
 RUN pnpm install --frozen-lockfile --filter @flow/render...
 
 WORKDIR /repo/apps/render
-RUN pnpm exec remotion browser ensure
+RUN pnpm exec tsx scripts/ensure-browser.ts
 
 ENV NODE_ENV=production RENDER_PORT=3001
 EXPOSE 3001
