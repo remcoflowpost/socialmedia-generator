@@ -1,0 +1,112 @@
+# Exportformaten per platform.
+#
+# Velden:
+#   id            uniek binnen het platform; de sleutel van een formaat is "{platform}/{id}"
+#   layoutClass   groep formaten die dezelfde layoutregels delen (zie templates); een template
+#                 kan per formaatsleutel of per layoutClass een layout opgeven
+#   safeZone      marge in px aan elke kant; tekst en logo's horen binnen deze zone
+#   exports       toegestane exporttypes
+#
+# Bronnen en aannames (geverifieerd oktober 2026):
+#   - Afmetingen: Meta Business Help Center (Instagram/Facebook ad specs) en LinkedIn
+#     Marketing Solutions "Ad specs". 1080x1440 (3:4) is sinds 2025 het rasterformaat
+#     van het Instagram-profiel.
+#   - Story/reel safe zones: Meta Ads Guide noemt 14% boven, 35% onder en 6% opzij vrij te
+#     houden voor 9:16 (stories en reels samen, reels-UI is onderin het grootst). Deze
+#     cijfers zijn voor advertenties gepubliceerd; voor organische posts publiceert Meta niets.
+#     Samenvatting: https://www.inro.social/tools/instagram-reels-safe-zone-checker
+#   - Feed-formaten: geen officiele safe zones bij Meta of LinkedIn. Aanname: 5% marge,
+#     zodat tekst niet tegen de rand plakt en het Instagram-profielraster (3:4-crop) een
+#     4:5-post maar 34 px per kant afsnijdt. Vierkante posts verliezen in dat raster 135 px
+#     per kant; dat is bewust geen safe zone, anders wordt de bruikbare ruimte te klein.
+
+formats:
+  - id: feed-square
+    platform: instagram
+    label: Instagram feed vierkant
+    width: 1080
+    height: 1080
+    layoutClass: square
+    safeZone: { top: 54, bottom: 54, left: 54, right: 54 }
+    exports: [jpeg, png]
+
+  - id: feed-portrait
+    platform: instagram
+    label: Instagram feed portret
+    width: 1080
+    height: 1350
+    layoutClass: portrait
+    safeZone: { top: 54, bottom: 54, left: 54, right: 54 }
+    exports: [jpeg, png]
+
+  - id: feed-3x4
+    platform: instagram
+    label: Instagram feed 3:4
+    width: 1080
+    height: 1440
+    layoutClass: three-four
+    safeZone: { top: 54, bottom: 54, left: 54, right: 54 }
+    exports: [jpeg, png]
+
+  - id: story
+    platform: instagram
+    label: Instagram story / reel
+    width: 1080
+    height: 1920
+    layoutClass: tall
+    safeZone: { top: 269, bottom: 672, left: 65, right: 65 }
+    exports: [jpeg, png, mp4]
+
+  - id: feed-landscape
+    platform: facebook
+    label: Facebook feed liggend
+    width: 1200
+    height: 630
+    layoutClass: landscape
+    safeZone: { top: 40, bottom: 40, left: 60, right: 60 }
+    exports: [jpeg, png]
+
+  - id: feed-square
+    platform: facebook
+    label: Facebook feed vierkant
+    width: 1080
+    height: 1080
+    layoutClass: square
+    safeZone: { top: 54, bottom: 54, left: 54, right: 54 }
+    exports: [jpeg, png]
+
+  - id: story
+    platform: facebook
+    label: Facebook story
+    width: 1080
+    height: 1920
+    layoutClass: tall
+    safeZone: { top: 269, bottom: 672, left: 65, right: 65 }
+    exports: [jpeg, png, mp4]
+
+  - id: landscape
+    platform: linkedin
+    label: LinkedIn liggend
+    width: 1200
+    height: 627
+    layoutClass: landscape
+    safeZone: { top: 40, bottom: 40, left: 60, right: 60 }
+    exports: [jpeg, png]
+
+  - id: square
+    platform: linkedin
+    label: LinkedIn vierkant
+    width: 1080
+    height: 1080
+    layoutClass: square
+    safeZone: { top: 54, bottom: 54, left: 54, right: 54 }
+    exports: [jpeg, png]
+
+  - id: portrait
+    platform: linkedin
+    label: LinkedIn portret
+    width: 1080
+    height: 1350
+    layoutClass: portrait
+    safeZone: { top: 54, bottom: 54, left: 54, right: 54 }
+    exports: [jpeg, png]

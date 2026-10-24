@@ -1,0 +1,154 @@
+# Teamlid: portret bovenin (of links op liggend), naam en rol op de merkkleur.
+key: team_member
+name: Teamlid
+type: team_member
+version: 1
+description: Stel een (nieuw) teamlid voor met portret, naam en rol.
+fields:
+  - key: portrait
+    label: Portret
+    type: image
+    required: true
+    help: Een portretfoto. Zet het focuspunt op het gezicht.
+  - key: label
+    label: Label
+    type: select
+    options: [Nieuw in het team, Maak kennis met, In de spotlight]
+  - key: person_name
+    label: Naam
+    type: text
+    required: true
+    maxLength: 40
+  - key: person_role
+    label: Functie
+    type: text
+    required: true
+    maxLength: 50
+  - key: quote
+    label: Quote
+    type: longtext
+    maxLength: 120
+    help: Wordt niet getoond op liggende formaten.
+
+layers:
+  - id: background
+    type: shape
+    source: static
+    z: 0
+    shapeStyle: { fill: primary }
+    layouts:
+      default:
+        box: { anchor: top-left, width: 100, height: 100, bleed: true }
+
+  - id: portrait
+    type: image
+    source: upload
+    field: portrait
+    z: 10
+    editable: true
+    layouts:
+      default:
+        box: { anchor: top-left, width: 100, height: 58, bleed: true }
+        fit: cover
+        focus: { x: 0.5, y: 0.35 }
+      tall:
+        box: { anchor: top-left, width: 100, height: 52, bleed: true }
+      landscape:
+        box: { anchor: top-left, width: 42, height: 100, bleed: true }
+
+  - id: accent_bar
+    type: shape
+    source: static
+    z: 20
+    shapeStyle: { fill: accent }
+    layouts:
+      default:
+        box: { anchor: top-left, y: 58, width: 100, height: 1.2, bleed: true }
+      tall:
+        box: { anchor: top-left, y: 52, width: 100, height: 0.8, bleed: true }
+      landscape:
+        box: { anchor: top-left, x: 42, width: 1.2, height: 100, bleed: true }
+
+  - id: label
+    type: text
+    source: content_field
+    field: label
+    z: 30
+    textStyle: { font: heading, weight: 700, color: accent, uppercase: true, letterSpacing: 0.08 }
+    layouts:
+      default:
+        box: { anchor: bottom-left, y: 30, width: 70, height: 5 }
+        minFontSize: 20
+        maxFontSize: 28
+        maxLines: 1
+        verticalAlign: bottom
+      landscape:
+        box: { anchor: top-right, y: 10, width: 50, height: 8 }
+        minFontSize: 16
+        maxFontSize: 22
+
+  - id: person_name
+    type: text
+    source: content_field
+    field: person_name
+    z: 30
+    textStyle: { font: heading, weight: 700, color: text_on_dark, lineHeight: 1.05 }
+    layouts:
+      default:
+        box: { anchor: bottom-left, y: 19, width: 75, height: 10 }
+        minFontSize: 40
+        maxFontSize: 76
+        maxLines: 1
+        verticalAlign: bottom
+      landscape:
+        box: { anchor: top-right, y: 20, width: 50, height: 30 }
+        minFontSize: 34
+        maxFontSize: 58
+        maxLines: 2
+        verticalAlign: top
+
+  - id: person_role
+    type: text
+    source: content_field
+    field: person_role
+    z: 30
+    textStyle: { font: body, weight: 500, color: secondary }
+    layouts:
+      default:
+        box: { anchor: bottom-left, y: 13, width: 75, height: 6 }
+        minFontSize: 24
+        maxFontSize: 36
+        maxLines: 1
+        verticalAlign: bottom
+      landscape:
+        box: { anchor: top-right, y: 52, width: 50, height: 10 }
+        minFontSize: 20
+        maxFontSize: 30
+
+  - id: quote
+    type: text
+    source: content_field
+    field: quote
+    z: 30
+    textStyle: { font: body, weight: 400, color: text_on_dark, lineHeight: 1.3 }
+    layouts:
+      default:
+        box: { anchor: bottom-left, y: 0, width: 75, height: 12 }
+        minFontSize: 22
+        maxFontSize: 30
+        maxLines: 3
+      landscape:
+        hidden: true
+
+  - id: logo
+    type: logo
+    source: brand_asset
+    brandAsset: logo_light
+    z: 40
+    layouts:
+      default:
+        box: { anchor: bottom-right, width: 20, height: 8 }
+        fit: contain
+        focus: { x: 1, y: 1 }
+      landscape:
+        box: { anchor: bottom-right, width: 18, height: 12 }

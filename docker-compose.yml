@@ -1,0 +1,75 @@
+# Flow Social Generator. Starten: docker compose up -d --build
+# Daarna eenmalig seed-data: docker compose exec api python -m app.seed
+
+x-api-env: &api-env
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql+psycopg://flow:${POSTGRES_PASSWORD}@db:5432/flow_social
+    STORAGE_ROOT: /data/storage
+    RENDER_URL: http://render:3001
+    RENDER_ASSET_BASE_URL: http://localhost:3001/storage
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: flow
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: flow_social
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flow -d flow_social"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    restart: unless-stopped
+    <<: *api-env
+    volumes:
+      - storage:/data/storage
+    depends_on:
+      db: { condition: service_healthy }
+
+  worker:
+    build: { context: ., dockerfile: apps/api/Dockerfile }
+    restart: unless-stopped
+    command: ["python", "-m", "app.worker"]
+    <<: *api-env
+    volumes:
+      - storage:/data/storage
+    depends_on:
+      db: { condition: service_healthy }
+      api: { condition: service_started }
+
+  render:
+    build: { context: ., dockerfile: apps/render/Dockerfile }
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      STORAGE_ROOT: /data/storage
+    volumes:
+      - storage:/data/storage
+    # Chromium heeft gedeeld geheugen nodig voor grote canvassen.
+    shm_size: 1gb
+
+  web:
+    build: { context: ., dockerfile: apps/web/Dockerfile }
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on: [api]
+
+volumes:
+  pgdata:
+  # Standaard een lokaal docker-volume. Voor de NAS: vervang door een CIFS-volume, bijvoorbeeld
+  #   storage:
+  #     driver: local
+  #     driver_opts:
+  #       type: cifs
+  #       device: "//nas.flow.local/social-generator"
+  #       o: "username=${NAS_USER},password=${NAS_PASSWORD},vers=3.1.1,uid=0,gid=0"
+  # Binnen de containers blijft het pad /data/storage; UNC-paden komen dus nergens in code voor.
+  storage:

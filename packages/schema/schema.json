@@ -1,0 +1,1438 @@
+{
+  "$defs": {
+    "Box": {
+      "additionalProperties": false,
+      "description": "Positie en grootte in procenten van de safe area (of het canvas bij bleed).\n\nx en y zijn offsets vanaf het anker naar binnen; bij anker \"center\" schuiven ze\nhet midden op.",
+      "properties": {
+        "anchor": {
+          "default": "top-left",
+          "enum": [
+            "top-left",
+            "top",
+            "top-right",
+            "left",
+            "center",
+            "right",
+            "bottom-left",
+            "bottom",
+            "bottom-right"
+          ],
+          "type": "string"
+        },
+        "bleed": {
+          "default": false,
+          "type": "boolean"
+        },
+        "height": {
+          "default": 100,
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "width": {
+          "default": 100,
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "x": {
+          "default": 0,
+          "type": "number"
+        },
+        "y": {
+          "default": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "anchor",
+        "x",
+        "y",
+        "width",
+        "height",
+        "bleed"
+      ],
+      "title": "Box",
+      "type": "object"
+    },
+    "BrandColors": {
+      "additionalProperties": false,
+      "properties": {
+        "accent": {
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "type": "string"
+        },
+        "primary": {
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "type": "string"
+        },
+        "secondary": {
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "type": "string"
+        },
+        "textOnDark": {
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "type": "string"
+        },
+        "textOnLight": {
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "primary",
+        "secondary",
+        "accent",
+        "textOnDark",
+        "textOnLight"
+      ],
+      "title": "BrandColors",
+      "type": "object"
+    },
+    "BrandFont": {
+      "additionalProperties": false,
+      "properties": {
+        "fallback": {
+          "default": "Arial, Helvetica, sans-serif",
+          "type": "string"
+        },
+        "family": {
+          "type": "string"
+        },
+        "files": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/BrandFontFile"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "family",
+        "files",
+        "fallback"
+      ],
+      "title": "BrandFont",
+      "type": "object"
+    },
+    "BrandFontFile": {
+      "additionalProperties": false,
+      "properties": {
+        "assetId": {
+          "type": "string"
+        },
+        "style": {
+          "default": "normal",
+          "enum": [
+            "normal",
+            "italic"
+          ],
+          "type": "string"
+        },
+        "weight": {
+          "default": 400,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "assetId",
+        "weight",
+        "style"
+      ],
+      "title": "BrandFontFile",
+      "type": "object"
+    },
+    "BrandFonts": {
+      "additionalProperties": false,
+      "properties": {
+        "body": {
+          "$ref": "#/$defs/BrandFont"
+        },
+        "heading": {
+          "$ref": "#/$defs/BrandFont"
+        }
+      },
+      "required": [
+        "heading",
+        "body"
+      ],
+      "title": "BrandFonts",
+      "type": "object"
+    },
+    "BrandKitData": {
+      "additionalProperties": false,
+      "properties": {
+        "colors": {
+          "$ref": "#/$defs/BrandColors"
+        },
+        "fonts": {
+          "$ref": "#/$defs/BrandFonts"
+        },
+        "locks": {
+          "default": [
+            "logo",
+            "colors",
+            "fonts"
+          ],
+          "items": {
+            "enum": [
+              "logo",
+              "colors",
+              "fonts",
+              "style_anchor"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "logos": {
+          "$ref": "#/$defs/BrandLogos",
+          "default": {
+            "logoDark": null,
+            "logoIcon": null,
+            "logoLight": null
+          }
+        },
+        "negativePrompt": {
+          "default": "",
+          "type": "string"
+        },
+        "styleAnchor": {
+          "$ref": "#/$defs/StyleAnchor",
+          "default": {
+            "description": "",
+            "referenceAssetIds": []
+          }
+        }
+      },
+      "required": [
+        "colors",
+        "fonts",
+        "logos",
+        "styleAnchor",
+        "negativePrompt",
+        "locks"
+      ],
+      "title": "BrandKitData",
+      "type": "object"
+    },
+    "BrandLogos": {
+      "additionalProperties": false,
+      "description": "Asset-id's. light = lichte variant voor donkere achtergronden.",
+      "properties": {
+        "logoDark": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "logoIcon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "logoLight": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "logoLight",
+        "logoDark",
+        "logoIcon"
+      ],
+      "title": "BrandLogos",
+      "type": "object"
+    },
+    "ContentField": {
+      "additionalProperties": false,
+      "properties": {
+        "help": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "key": {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "maxLength": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "minWidth": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "options": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "required": {
+          "default": false,
+          "type": "boolean"
+        },
+        "type": {
+          "enum": [
+            "text",
+            "longtext",
+            "image",
+            "select",
+            "multiselect",
+            "date"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "type",
+        "required",
+        "maxLength",
+        "options",
+        "help",
+        "minWidth"
+      ],
+      "title": "ContentField",
+      "type": "object"
+    },
+    "Format": {
+      "additionalProperties": false,
+      "properties": {
+        "exports": {
+          "items": {
+            "enum": [
+              "jpeg",
+              "png",
+              "mp4"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "height": {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        "id": {
+          "pattern": "^[a-z0-9-]+$",
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "layoutClass": {
+          "type": "string"
+        },
+        "platform": {
+          "pattern": "^[a-z0-9-]+$",
+          "type": "string"
+        },
+        "safeZone": {
+          "$ref": "#/$defs/SafeZone"
+        },
+        "width": {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "platform",
+        "label",
+        "width",
+        "height",
+        "layoutClass",
+        "safeZone",
+        "exports"
+      ],
+      "title": "Format",
+      "type": "object"
+    },
+    "FormatsConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "formats": {
+          "items": {
+            "$ref": "#/$defs/Format"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "formats"
+      ],
+      "title": "FormatsConfig",
+      "type": "object"
+    },
+    "Gradient": {
+      "additionalProperties": false,
+      "properties": {
+        "angle": {
+          "default": 180,
+          "type": "number"
+        },
+        "fromColor": {
+          "type": "string"
+        },
+        "fromOpacity": {
+          "default": 1,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "toColor": {
+          "type": "string"
+        },
+        "toOpacity": {
+          "default": 0,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "fromColor",
+        "toColor",
+        "fromOpacity",
+        "toOpacity",
+        "angle"
+      ],
+      "title": "Gradient",
+      "type": "object"
+    },
+    "Layer": {
+      "additionalProperties": false,
+      "properties": {
+        "brandAsset": {
+          "anyOf": [
+            {
+              "enum": [
+                "logo_light",
+                "logo_dark",
+                "logo_icon"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "editable": {
+          "default": false,
+          "type": "boolean"
+        },
+        "field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "type": "string"
+        },
+        "layouts": {
+          "additionalProperties": {
+            "$ref": "#/$defs/LayerLayout"
+          },
+          "type": "object"
+        },
+        "prompt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PromptSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "shapeStyle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ShapeStyle"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "source": {
+          "enum": [
+            "upload",
+            "brand_asset",
+            "generated",
+            "content_field",
+            "static"
+          ],
+          "type": "string"
+        },
+        "static": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "textStyle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TextStyle"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "type": {
+          "enum": [
+            "background",
+            "image",
+            "element",
+            "logo",
+            "text",
+            "shape",
+            "video"
+          ],
+          "type": "string"
+        },
+        "z": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "source",
+        "z",
+        "editable",
+        "field",
+        "brandAsset",
+        "static",
+        "textStyle",
+        "shapeStyle",
+        "layouts",
+        "prompt"
+      ],
+      "title": "Layer",
+      "type": "object"
+    },
+    "LayerLayout": {
+      "additionalProperties": false,
+      "description": "Layout voor een formaat. Alle velden optioneel, zodat overrides alleen afwijkingen\nhoeven op te geven. Volgorde van samenvoegen: default, layout_class, formaatsleutel.",
+      "properties": {
+        "align": {
+          "anyOf": [
+            {
+              "enum": [
+                "left",
+                "center",
+                "right"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "box": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Box"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "fit": {
+          "anyOf": [
+            {
+              "enum": [
+                "cover",
+                "contain"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "focus": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Point"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "hidden": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "maxFontSize": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "maxLines": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "minFontSize": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "verticalAlign": {
+          "anyOf": [
+            {
+              "enum": [
+                "top",
+                "center",
+                "bottom"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "box",
+        "hidden",
+        "fit",
+        "focus",
+        "minFontSize",
+        "maxFontSize",
+        "maxLines",
+        "align",
+        "verticalAlign"
+      ],
+      "title": "LayerLayout",
+      "type": "object"
+    },
+    "LayerOverride": {
+      "additionalProperties": false,
+      "description": "Afwijking per laag voor een post. Alleen toegestaan op lagen die editable zijn en\nniet onder een brand-kit-lock vallen.",
+      "properties": {
+        "assetId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "focus": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Point"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "hidden": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "assetId",
+        "focus",
+        "hidden"
+      ],
+      "title": "LayerOverride",
+      "type": "object"
+    },
+    "LayerReport": {
+      "additionalProperties": false,
+      "properties": {
+        "box": {
+          "$ref": "#/$defs/PixelBox"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "fontSize": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "lines": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "sourceScale": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "hidden",
+        "box",
+        "fontSize",
+        "lines",
+        "color",
+        "sourceScale"
+      ],
+      "title": "LayerReport",
+      "type": "object"
+    },
+    "LayoutReport": {
+      "additionalProperties": false,
+      "description": "Uitkomst van de layout-engine (TypeScript) voor een formaat.",
+      "properties": {
+        "formatKey": {
+          "type": "string"
+        },
+        "height": {
+          "type": "integer"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/QualityIssue"
+          },
+          "type": "array"
+        },
+        "layers": {
+          "items": {
+            "$ref": "#/$defs/LayerReport"
+          },
+          "type": "array"
+        },
+        "width": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "formatKey",
+        "width",
+        "height",
+        "layers",
+        "issues"
+      ],
+      "title": "LayoutReport",
+      "type": "object"
+    },
+    "PixelBox": {
+      "additionalProperties": false,
+      "properties": {
+        "height": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "PixelBox",
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "description": "Focuspunt, 0..1 over breedte en hoogte van het bronbeeld.",
+      "properties": {
+        "x": {
+          "default": 0.5,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "y": {
+          "default": 0.5,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "Point",
+      "type": "object"
+    },
+    "PostDocument": {
+      "additionalProperties": false,
+      "description": "Het bewerkbare deel van een post: ingevulde velden en per-laag overrides.",
+      "properties": {
+        "content": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "object"
+        },
+        "overrides": {
+          "additionalProperties": {
+            "$ref": "#/$defs/LayerOverride"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "content",
+        "overrides"
+      ],
+      "title": "PostDocument",
+      "type": "object"
+    },
+    "PromptSpec": {
+      "additionalProperties": false,
+      "description": "Generatie-instructie per laag. Wordt in fase 2 gebruikt, staat er nu al in zodat\ntemplates niet opnieuw hoeven te worden opgezet.",
+      "properties": {
+        "base": {
+          "type": "string"
+        },
+        "inheritBrandStyle": {
+          "default": true,
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "image",
+            "video",
+            "element"
+          ],
+          "type": "string"
+        },
+        "masterAspect": {
+          "default": "1:1",
+          "type": "string"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "negative": {
+          "default": "",
+          "type": "string"
+        },
+        "provider": {
+          "default": "mock",
+          "type": "string"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "useBrandReferences": {
+          "default": true,
+          "type": "boolean"
+        },
+        "variables": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "variants": {
+          "default": 3,
+          "maximum": 4,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "base",
+        "variables",
+        "inheritBrandStyle",
+        "useBrandReferences",
+        "negative",
+        "provider",
+        "model",
+        "masterAspect",
+        "seed",
+        "variants"
+      ],
+      "title": "PromptSpec",
+      "type": "object"
+    },
+    "QualityIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "missing_required_field",
+            "missing_asset",
+            "resolution_low",
+            "resolution_too_low",
+            "outside_safe_zone",
+            "text_overflow",
+            "contrast_low",
+            "embargo_active",
+            "font_missing"
+          ],
+          "type": "string"
+        },
+        "details": {
+          "additionalProperties": true,
+          "default": {},
+          "type": "object"
+        },
+        "formatKey": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "layerId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "message": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "warning",
+            "error"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "message",
+        "layerId",
+        "formatKey",
+        "details"
+      ],
+      "title": "QualityIssue",
+      "type": "object"
+    },
+    "RenderAsset": {
+      "additionalProperties": false,
+      "properties": {
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "mime": {
+          "type": "string"
+        },
+        "src": {
+          "type": "string"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "src",
+        "width",
+        "height",
+        "mime"
+      ],
+      "title": "RenderAsset",
+      "type": "object"
+    },
+    "RenderInput": {
+      "additionalProperties": false,
+      "description": "Alles wat de compositie nodig heeft om een formaat te renderen.\n\nDe render-service en de browser-preview krijgen precies dit document, zodat preview en\nexport dezelfde bron hebben.",
+      "properties": {
+        "assets": {
+          "additionalProperties": {
+            "$ref": "#/$defs/RenderAsset"
+          },
+          "type": "object"
+        },
+        "brand": {
+          "$ref": "#/$defs/BrandKitData"
+        },
+        "format": {
+          "$ref": "#/$defs/Format"
+        },
+        "options": {
+          "$ref": "#/$defs/RenderOptions",
+          "default": {
+            "hideText": false,
+            "showSafeZones": false
+          }
+        },
+        "post": {
+          "$ref": "#/$defs/PostDocument"
+        },
+        "template": {
+          "$ref": "#/$defs/TemplateDefinition"
+        }
+      },
+      "required": [
+        "format",
+        "template",
+        "brand",
+        "post",
+        "assets",
+        "options"
+      ],
+      "title": "RenderInput",
+      "type": "object"
+    },
+    "RenderOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "hideText": {
+          "default": false,
+          "type": "boolean"
+        },
+        "showSafeZones": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "showSafeZones",
+        "hideText"
+      ],
+      "title": "RenderOptions",
+      "type": "object"
+    },
+    "SafeZone": {
+      "additionalProperties": false,
+      "properties": {
+        "bottom": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "left": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "right": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "top": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "top",
+        "bottom",
+        "left",
+        "right"
+      ],
+      "title": "SafeZone",
+      "type": "object"
+    },
+    "ShapeStyle": {
+      "additionalProperties": false,
+      "properties": {
+        "fill": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "gradient": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Gradient"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "opacity": {
+          "default": 1,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        "radius": {
+          "default": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "fill",
+        "gradient",
+        "opacity",
+        "radius"
+      ],
+      "title": "ShapeStyle",
+      "type": "object"
+    },
+    "StyleAnchor": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "default": "",
+          "type": "string"
+        },
+        "referenceAssetIds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 6,
+          "type": "array"
+        }
+      },
+      "required": [
+        "description",
+        "referenceAssetIds"
+      ],
+      "title": "StyleAnchor",
+      "type": "object"
+    },
+    "TemplateDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "default": "",
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "$ref": "#/$defs/ContentField"
+          },
+          "type": "array"
+        },
+        "formats": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "key": {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "type": "string"
+        },
+        "layers": {
+          "items": {
+            "$ref": "#/$defs/Layer"
+          },
+          "type": "array"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "version": {
+          "default": 1,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "key",
+        "name",
+        "type",
+        "version",
+        "description",
+        "formats",
+        "fields",
+        "layers"
+      ],
+      "title": "TemplateDefinition",
+      "type": "object"
+    },
+    "TextStyle": {
+      "additionalProperties": false,
+      "properties": {
+        "color": {
+          "default": "text_on_dark",
+          "type": "string"
+        },
+        "font": {
+          "default": "body",
+          "enum": [
+            "heading",
+            "body"
+          ],
+          "type": "string"
+        },
+        "letterSpacing": {
+          "default": 0,
+          "type": "number"
+        },
+        "lineHeight": {
+          "default": 1.15,
+          "type": "number"
+        },
+        "uppercase": {
+          "default": false,
+          "type": "boolean"
+        },
+        "weight": {
+          "default": 400,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "font",
+        "weight",
+        "color",
+        "lineHeight",
+        "letterSpacing",
+        "uppercase"
+      ],
+      "title": "TextStyle",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "BrandKitData": {
+      "$ref": "#/$defs/BrandKitData"
+    },
+    "FormatsConfig": {
+      "$ref": "#/$defs/FormatsConfig"
+    },
+    "LayoutReport": {
+      "$ref": "#/$defs/LayoutReport"
+    },
+    "PostDocument": {
+      "$ref": "#/$defs/PostDocument"
+    },
+    "RenderInput": {
+      "$ref": "#/$defs/RenderInput"
+    },
+    "TemplateDefinition": {
+      "$ref": "#/$defs/TemplateDefinition"
+    }
+  },
+  "title": "FlowSocialSchema",
+  "type": "object"
+}

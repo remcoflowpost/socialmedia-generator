@@ -1,0 +1,1179 @@
+{
+  "formats": [
+    {
+      "id": "feed-square",
+      "platform": "instagram",
+      "label": "Instagram feed vierkant",
+      "width": 1080,
+      "height": 1080,
+      "layoutClass": "square",
+      "safeZone": {
+        "top": 54,
+        "bottom": 54,
+        "left": 54,
+        "right": 54
+      },
+      "exports": [
+        "jpeg",
+        "png"
+      ]
+    },
+    {
+      "id": "feed-portrait",
+      "platform": "instagram",
+      "label": "Instagram feed portret",
+      "width": 1080,
+      "height": 1350,
+      "layoutClass": "portrait",
+      "safeZone": {
+        "top": 54,
+        "bottom": 54,
+        "left": 54,
+        "right": 54
+      },
+      "exports": [
+        "jpeg",
+        "png"
+      ]
+    },
+    {
+      "id": "feed-3x4",
+      "platform": "instagram",
+      "label": "Instagram feed 3:4",
+      "width": 1080,
+      "height": 1440,
+      "layoutClass": "three-four",
+      "safeZone": {
+        "top": 54,
+        "bottom": 54,
+        "left": 54,
+        "right": 54
+      },
+      "exports": [
+        "jpeg",
+        "png"
+      ]
+    },
+    {
+      "id": "story",
+      "platform": "instagram",
+      "label": "Instagram story / reel",
+      "width": 1080,
+      "height": 1920,
+      "layoutClass": "tall",
+      "safeZone": {
+        "top": 269,
+        "bottom": 672,
+        "left": 65,
+        "right": 65
+      },
+      "exports": [
+        "jpeg",
+        "png",
+        "mp4"
+      ]
+    },
+    {
+      "id": "feed-landscape",
+      "platform": "facebook",
+      "label": "Facebook feed liggend",
+      "width": 1200,
+      "height": 630,
+      "layoutClass": "landscape",
+      "safeZone": {
+        "top": 40,
+        "bottom": 40,
+        "left": 60,
+        "right": 60
+      },
+      "exports": [
+        "jpeg",
+        "png"
+      ]
+    },
+    {
+      "id": "feed-square",
+      "platform": "facebook",
+      "label": "Facebook feed vierkant",
+      "width": 1080,
+      "height": 1080,
+      "layoutClass": "square",
+      "safeZone": {
+        "top": 54,
+        "bottom": 54,
+        "left": 54,
+        "right": 54
+      },
+      "exports": [
+        "jpeg",
+        "png"
+      ]
+    },
+    {
+      "id": "story",
+      "platform": "facebook",
+      "label": "Facebook story",
+      "width": 1080,
+      "height": 1920,
+      "layoutClass": "tall",
+      "safeZone": {
+        "top": 269,
+        "bottom": 672,
+        "left": 65,
+        "right": 65
+      },
+      "exports": [
+        "jpeg",
+        "png",
+        "mp4"
+      ]
+    },
+    {
+      "id": "landscape",
+      "platform": "linkedin",
+      "label": "LinkedIn liggend",
+      "width": 1200,
+      "height": 627,
+      "layoutClass": "landscape",
+      "safeZone": {
+        "top": 40,
+        "bottom": 40,
+        "left": 60,
+        "right": 60
+      },
+      "exports": [
+        "jpeg",
+        "png"
+      ]
+    },
+    {
+      "id": "square",
+      "platform": "linkedin",
+      "label": "LinkedIn vierkant",
+      "width": 1080,
+      "height": 1080,
+      "layoutClass": "square",
+      "safeZone": {
+        "top": 54,
+        "bottom": 54,
+        "left": 54,
+        "right": 54
+      },
+      "exports": [
+        "jpeg",
+        "png"
+      ]
+    },
+    {
+      "id": "portrait",
+      "platform": "linkedin",
+      "label": "LinkedIn portret",
+      "width": 1080,
+      "height": 1350,
+      "layoutClass": "portrait",
+      "safeZone": {
+        "top": 54,
+        "bottom": 54,
+        "left": 54,
+        "right": 54
+      },
+      "exports": [
+        "jpeg",
+        "png"
+      ]
+    }
+  ],
+  "templates": {
+    "project_announcement": {
+      "key": "project_announcement",
+      "name": "Projectaankondiging",
+      "type": "project_announcement",
+      "version": 1,
+      "description": "Kondig een project aan met een projectbeeld, titel en klant- of projectnaam.",
+      "formats": null,
+      "fields": [
+        {
+          "key": "background_image",
+          "label": "Projectbeeld",
+          "type": "image",
+          "required": true,
+          "maxLength": null,
+          "options": [],
+          "help": "Een still uit het project. Liefst minstens 1920 px breed.",
+          "minWidth": null
+        },
+        {
+          "key": "label",
+          "label": "Label",
+          "type": "select",
+          "required": false,
+          "maxLength": null,
+          "options": [
+            "Nieuw project",
+            "Net opgeleverd",
+            "Nu te zien",
+            "Behind the scenes"
+          ],
+          "help": null,
+          "minWidth": null
+        },
+        {
+          "key": "headline",
+          "label": "Titel",
+          "type": "text",
+          "required": true,
+          "maxLength": 70,
+          "options": [],
+          "help": null,
+          "minWidth": null
+        },
+        {
+          "key": "client_or_project_name",
+          "label": "Klant of project in beeld",
+          "type": "text",
+          "required": true,
+          "maxLength": 40,
+          "options": [],
+          "help": null,
+          "minWidth": null
+        },
+        {
+          "key": "note",
+          "label": "Extra notitie",
+          "type": "longtext",
+          "required": false,
+          "maxLength": 140,
+          "options": [],
+          "help": "Wordt niet getoond op liggende formaten.",
+          "minWidth": null
+        }
+      ],
+      "layers": [
+        {
+          "id": "photo",
+          "type": "background",
+          "source": "upload",
+          "z": 0,
+          "editable": true,
+          "field": "background_image",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": null,
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 0,
+                "width": 100.0,
+                "height": 100.0,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": "cover",
+              "focus": {
+                "x": 0.5,
+                "y": 0.5
+              },
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "scrim",
+          "type": "shape",
+          "source": "static",
+          "z": 10,
+          "editable": false,
+          "field": null,
+          "brandAsset": null,
+          "static": null,
+          "textStyle": null,
+          "shapeStyle": {
+            "fill": null,
+            "gradient": {
+              "fromColor": "#000000",
+              "toColor": "#000000",
+              "fromOpacity": 0.0,
+              "toOpacity": 0.85,
+              "angle": 180.0
+            },
+            "opacity": 1,
+            "radius": 0
+          },
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 0,
+                "width": 100.0,
+                "height": 70.0,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            },
+            "tall": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 0,
+                "width": 100.0,
+                "height": 80.0,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            },
+            "landscape": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 0,
+                "width": 100.0,
+                "height": 100.0,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "logo",
+          "type": "logo",
+          "source": "brand_asset",
+          "z": 20,
+          "editable": false,
+          "field": null,
+          "brandAsset": "logo_light",
+          "static": null,
+          "textStyle": null,
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 0,
+                "width": 28.0,
+                "height": 9.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": "contain",
+              "focus": {
+                "x": 0.0,
+                "y": 0.0
+              },
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            },
+            "landscape": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 0,
+                "width": 20.0,
+                "height": 12.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "label",
+          "type": "text",
+          "source": "content_field",
+          "z": 30,
+          "editable": false,
+          "field": "label",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": {
+            "font": "heading",
+            "weight": 700,
+            "color": "accent",
+            "lineHeight": 1.1,
+            "letterSpacing": 0.08,
+            "uppercase": true
+          },
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 48.0,
+                "width": 100.0,
+                "height": 5.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 22.0,
+              "maxFontSize": 30.0,
+              "maxLines": 1,
+              "align": null,
+              "verticalAlign": "bottom"
+            },
+            "landscape": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 62.0,
+                "width": 60.0,
+                "height": 8.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 18.0,
+              "maxFontSize": 24.0,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "headline",
+          "type": "text",
+          "source": "content_field",
+          "z": 30,
+          "editable": false,
+          "field": "headline",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": {
+            "font": "heading",
+            "weight": 700,
+            "color": "text_on_dark",
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "uppercase": false
+          },
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 21.0,
+                "width": 100.0,
+                "height": 26.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 44.0,
+              "maxFontSize": 88.0,
+              "maxLines": 3,
+              "align": null,
+              "verticalAlign": "bottom"
+            },
+            "landscape": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 13.0,
+                "width": 62.0,
+                "height": 48.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 32.0,
+              "maxFontSize": 60.0,
+              "maxLines": 3,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "client_name",
+          "type": "text",
+          "source": "content_field",
+          "z": 30,
+          "editable": false,
+          "field": "client_or_project_name",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": {
+            "font": "body",
+            "weight": 500,
+            "color": "secondary",
+            "lineHeight": 1.1,
+            "letterSpacing": 0,
+            "uppercase": false
+          },
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 13.0,
+                "width": 100.0,
+                "height": 7.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 26.0,
+              "maxFontSize": 40.0,
+              "maxLines": 1,
+              "align": null,
+              "verticalAlign": "bottom"
+            },
+            "landscape": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 0.0,
+                "width": 62.0,
+                "height": 11.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 22.0,
+              "maxFontSize": 32.0,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "note",
+          "type": "text",
+          "source": "content_field",
+          "z": 30,
+          "editable": false,
+          "field": "note",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": {
+            "font": "body",
+            "weight": 400,
+            "color": "text_on_dark",
+            "lineHeight": 1.3,
+            "letterSpacing": 0,
+            "uppercase": false
+          },
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 0.0,
+                "width": 90.0,
+                "height": 12.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 22.0,
+              "maxFontSize": 30.0,
+              "maxLines": 3,
+              "align": null,
+              "verticalAlign": null
+            },
+            "landscape": {
+              "box": null,
+              "hidden": true,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        }
+      ]
+    },
+    "team_member": {
+      "key": "team_member",
+      "name": "Teamlid",
+      "type": "team_member",
+      "version": 1,
+      "description": "Stel een (nieuw) teamlid voor met portret, naam en rol.",
+      "formats": null,
+      "fields": [
+        {
+          "key": "portrait",
+          "label": "Portret",
+          "type": "image",
+          "required": true,
+          "maxLength": null,
+          "options": [],
+          "help": "Een portretfoto. Zet het focuspunt op het gezicht.",
+          "minWidth": null
+        },
+        {
+          "key": "label",
+          "label": "Label",
+          "type": "select",
+          "required": false,
+          "maxLength": null,
+          "options": [
+            "Nieuw in het team",
+            "Maak kennis met",
+            "In de spotlight"
+          ],
+          "help": null,
+          "minWidth": null
+        },
+        {
+          "key": "person_name",
+          "label": "Naam",
+          "type": "text",
+          "required": true,
+          "maxLength": 40,
+          "options": [],
+          "help": null,
+          "minWidth": null
+        },
+        {
+          "key": "person_role",
+          "label": "Functie",
+          "type": "text",
+          "required": true,
+          "maxLength": 50,
+          "options": [],
+          "help": null,
+          "minWidth": null
+        },
+        {
+          "key": "quote",
+          "label": "Quote",
+          "type": "longtext",
+          "required": false,
+          "maxLength": 120,
+          "options": [],
+          "help": "Wordt niet getoond op liggende formaten.",
+          "minWidth": null
+        }
+      ],
+      "layers": [
+        {
+          "id": "background",
+          "type": "shape",
+          "source": "static",
+          "z": 0,
+          "editable": false,
+          "field": null,
+          "brandAsset": null,
+          "static": null,
+          "textStyle": null,
+          "shapeStyle": {
+            "fill": "primary",
+            "gradient": null,
+            "opacity": 1,
+            "radius": 0
+          },
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 0,
+                "width": 100.0,
+                "height": 100.0,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "portrait",
+          "type": "image",
+          "source": "upload",
+          "z": 10,
+          "editable": true,
+          "field": "portrait",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": null,
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 0,
+                "width": 100.0,
+                "height": 58.0,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": "cover",
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              },
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            },
+            "tall": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 0,
+                "width": 100.0,
+                "height": 52.0,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            },
+            "landscape": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 0,
+                "width": 42.0,
+                "height": 100.0,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "accent_bar",
+          "type": "shape",
+          "source": "static",
+          "z": 20,
+          "editable": false,
+          "field": null,
+          "brandAsset": null,
+          "static": null,
+          "textStyle": null,
+          "shapeStyle": {
+            "fill": "accent",
+            "gradient": null,
+            "opacity": 1,
+            "radius": 0
+          },
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 58.0,
+                "width": 100.0,
+                "height": 1.2,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            },
+            "tall": {
+              "box": {
+                "anchor": "top-left",
+                "x": 0,
+                "y": 52.0,
+                "width": 100.0,
+                "height": 0.8,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            },
+            "landscape": {
+              "box": {
+                "anchor": "top-left",
+                "x": 42.0,
+                "y": 0,
+                "width": 1.2,
+                "height": 100.0,
+                "bleed": true
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "label",
+          "type": "text",
+          "source": "content_field",
+          "z": 30,
+          "editable": false,
+          "field": "label",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": {
+            "font": "heading",
+            "weight": 700,
+            "color": "accent",
+            "lineHeight": 1.15,
+            "letterSpacing": 0.08,
+            "uppercase": true
+          },
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 30.0,
+                "width": 70.0,
+                "height": 5.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 20.0,
+              "maxFontSize": 28.0,
+              "maxLines": 1,
+              "align": null,
+              "verticalAlign": "bottom"
+            },
+            "landscape": {
+              "box": {
+                "anchor": "top-right",
+                "x": 0,
+                "y": 10.0,
+                "width": 50.0,
+                "height": 8.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 16.0,
+              "maxFontSize": 22.0,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "person_name",
+          "type": "text",
+          "source": "content_field",
+          "z": 30,
+          "editable": false,
+          "field": "person_name",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": {
+            "font": "heading",
+            "weight": 700,
+            "color": "text_on_dark",
+            "lineHeight": 1.05,
+            "letterSpacing": 0,
+            "uppercase": false
+          },
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 19.0,
+                "width": 75.0,
+                "height": 10.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 40.0,
+              "maxFontSize": 76.0,
+              "maxLines": 1,
+              "align": null,
+              "verticalAlign": "bottom"
+            },
+            "landscape": {
+              "box": {
+                "anchor": "top-right",
+                "x": 0,
+                "y": 20.0,
+                "width": 50.0,
+                "height": 30.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 34.0,
+              "maxFontSize": 58.0,
+              "maxLines": 2,
+              "align": null,
+              "verticalAlign": "top"
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "person_role",
+          "type": "text",
+          "source": "content_field",
+          "z": 30,
+          "editable": false,
+          "field": "person_role",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": {
+            "font": "body",
+            "weight": 500,
+            "color": "secondary",
+            "lineHeight": 1.15,
+            "letterSpacing": 0,
+            "uppercase": false
+          },
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 13.0,
+                "width": 75.0,
+                "height": 6.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 24.0,
+              "maxFontSize": 36.0,
+              "maxLines": 1,
+              "align": null,
+              "verticalAlign": "bottom"
+            },
+            "landscape": {
+              "box": {
+                "anchor": "top-right",
+                "x": 0,
+                "y": 52.0,
+                "width": 50.0,
+                "height": 10.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 20.0,
+              "maxFontSize": 30.0,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "quote",
+          "type": "text",
+          "source": "content_field",
+          "z": 30,
+          "editable": false,
+          "field": "quote",
+          "brandAsset": null,
+          "static": null,
+          "textStyle": {
+            "font": "body",
+            "weight": 400,
+            "color": "text_on_dark",
+            "lineHeight": 1.3,
+            "letterSpacing": 0,
+            "uppercase": false
+          },
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-left",
+                "x": 0,
+                "y": 0.0,
+                "width": 75.0,
+                "height": 12.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": 22.0,
+              "maxFontSize": 30.0,
+              "maxLines": 3,
+              "align": null,
+              "verticalAlign": null
+            },
+            "landscape": {
+              "box": null,
+              "hidden": true,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        },
+        {
+          "id": "logo",
+          "type": "logo",
+          "source": "brand_asset",
+          "z": 40,
+          "editable": false,
+          "field": null,
+          "brandAsset": "logo_light",
+          "static": null,
+          "textStyle": null,
+          "shapeStyle": null,
+          "layouts": {
+            "default": {
+              "box": {
+                "anchor": "bottom-right",
+                "x": 0,
+                "y": 0,
+                "width": 20.0,
+                "height": 8.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": "contain",
+              "focus": {
+                "x": 1.0,
+                "y": 1.0
+              },
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            },
+            "landscape": {
+              "box": {
+                "anchor": "bottom-right",
+                "x": 0,
+                "y": 0,
+                "width": 18.0,
+                "height": 12.0,
+                "bleed": false
+              },
+              "hidden": null,
+              "fit": null,
+              "focus": null,
+              "minFontSize": null,
+              "maxFontSize": null,
+              "maxLines": null,
+              "align": null,
+              "verticalAlign": null
+            }
+          },
+          "prompt": null
+        }
+      ]
+    }
+  }
+}
