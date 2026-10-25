@@ -9,7 +9,10 @@ import { AdminPage } from "./pages/AdminPage";
 import { EditorPage } from "./pages/EditorPage";
 import { LibraryPage } from "./pages/LibraryPage";
 import { LoginPage } from "./pages/LoginPage";
+import { PlanningPage } from "./pages/PlanningPage";
 import { PostsPage } from "./pages/PostsPage";
+import { PublicationLogPage } from "./pages/PublicationLogPage";
+import { PublishingAccountsPage } from "./pages/PublishingAccountsPage";
 
 export function App() {
   const queryClient = useQueryClient();
@@ -34,6 +37,9 @@ export function App() {
         <span className="font-semibold tracking-tight">Flow Social</span>
         <nav className="flex gap-1">
           <NavLink to="/posts" className={link}>Posts</NavLink>
+          <NavLink to="/publiceren/planning" className={link}>Planning</NavLink>
+          <NavLink to="/publiceren/log" className={link}>Publicatielog</NavLink>
+          <NavLink to="/publiceren/accounts" className={link}>Accounts</NavLink>
           <NavLink to="/bibliotheek" className={link}>Bibliotheek</NavLink>
           {user.role === "admin" && <NavLink to="/admin" className={link}>Beheer</NavLink>}
         </nav>
@@ -49,6 +55,9 @@ export function App() {
           <Route path="/" element={<Navigate to="/posts" replace />} />
           <Route path="/posts" element={<PostsPage />} />
           <Route path="/posts/:postId" element={<EditorPage user={user} />} />
+          <Route path="/publiceren/planning" element={<PlanningPage />} />
+          <Route path="/publiceren/log" element={<PublicationLogPage />} />
+          <Route path="/publiceren/accounts" element={<PublishingAccountsPage user={user} />} />
           <Route path="/bibliotheek" element={<LibraryPage user={user} />} />
           <Route path="/admin" element={user.role === "admin" ? <AdminPage /> : <Navigate to="/posts" />} />
         </Routes>

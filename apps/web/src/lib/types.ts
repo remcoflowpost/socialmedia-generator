@@ -75,3 +75,94 @@ export interface QualitySummary {
 }
 
 export const formatKey = (format: Format) => `${format.platform}/${format.id}`;
+
+// ------------------------------------------------------------------ publiceren
+
+export type AccountStatus = "active" | "reauth_required" | "disconnected";
+
+export interface SocialAccount {
+  id: string;
+  companyId: string;
+  provider: "instagram" | "facebook_page" | "sandbox";
+  providerLabel: string;
+  name: string;
+  handle: string;
+  status: AccountStatus;
+  statusReason: string | null;
+  lastCheckedAt: string | null;
+}
+
+export interface PublishingSettings {
+  timezone: string;
+  slots: { id: string; weekday: number; time: string }[];
+  accounts: SocialAccount[];
+  sandboxEnabled: boolean;
+  metaConfigured: boolean;
+}
+
+export type PublicationStatus = "scheduled" | "publishing" | "published" | "failed" | "cancelled";
+
+export interface Publication {
+  id: string;
+  version: number;
+  postId: string;
+  postTitle: string;
+  postVersionId: string;
+  formatKey: string;
+  account: SocialAccount;
+  caption: string;
+  status: PublicationStatus;
+  scheduledAt: string | null;
+  publishedAt: string | null;
+  nextAttemptAt: string | null;
+  attemptCount: number;
+  providerUrl: string | null;
+  failureCode: string | null;
+  failureMessage: string | null;
+  failureRetryable: boolean | null;
+  needsConfirm: boolean;
+}
+
+export interface PublishOptions {
+  timezone: string;
+  version: { id: string; number: number } | null;
+  exportedFormats: Record<string, { severity: string | null }>;
+  approval: { approved: boolean; version: number | null; by: string | null; at: string | null };
+  embargoUntil: string | null;
+  accounts: (SocialAccount & {
+    formats: string[];
+    unsupportedFormats: string[];
+    captionLimit: number | null;
+    nextSlot: string | null;
+  })[];
+}
+
+export interface PublishConflict {
+  otherId: string;
+  otherVersion: number;
+  otherCaption: string;
+  target: string;
+}
+
+export interface PublishErrorDetail {
+  message: string;
+  issues?: string[];
+  conflict?: PublishConflict;
+}
+
+export interface AttemptRow {
+  id: string;
+  publicationId: string;
+  postTitle: string;
+  account: SocialAccount;
+  formatKey: string;
+  attemptNo: number;
+  trigger: string;
+  startedAt: string;
+  finishedAt: string | null;
+  outcome: "in_progress" | "succeeded" | "failed" | "uncertain";
+  errorCode: string | null;
+  httpStatus: number | null;
+  providerMessage: string | null;
+  providerUrl: string | null;
+}

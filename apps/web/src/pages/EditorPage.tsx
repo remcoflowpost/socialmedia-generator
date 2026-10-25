@@ -1,7 +1,7 @@
 import type { LayerOverride, LayoutReport, PostDocument } from "@flow/schema";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Download, Save } from "lucide-react";
+import { ArrowLeft, CalendarClock, Download, Save } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
@@ -10,6 +10,7 @@ import { Input, Label, Switch } from "../components/ui/input";
 import { buildInput } from "../editor/buildInput";
 import { ContentForm } from "../editor/ContentForm";
 import { ExportDialog } from "../editor/ExportDialog";
+import { ScheduleDialog } from "../publishing/ScheduleDialog";
 import { IssuesList } from "../editor/IssuesList";
 import { LayersPanel } from "../editor/LayersPanel";
 import { Preview } from "../editor/Preview";
@@ -45,6 +46,7 @@ export function EditorPage({ user }: { user: User }) {
   const [saveState, setSaveState] = useState<SaveState>("opgeslagen");
   const [saveError, setSaveError] = useState<string | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
   const dirty = useRef(false);
   const loadedFor = useRef<string | null>(null);
   const [version, setVersion] = useState(0);
@@ -207,6 +209,7 @@ export function EditorPage({ user }: { user: User }) {
           <div className="ml-auto flex gap-2">
             <Button variant="secondary" size="sm" onClick={saveVersion}><Save size={14} /> Versie opslaan</Button>
             <Button size="sm" onClick={() => setExportOpen(true)}><Download size={14} /> Exporteren</Button>
+            <Button size="sm" variant="secondary" onClick={() => setScheduleOpen(true)}><CalendarClock size={14} /> Inplannen</Button>
           </div>
         </div>
         {!compare && (
@@ -272,6 +275,7 @@ export function EditorPage({ user }: { user: User }) {
         beforeExport={async () => !dirty.current || (await saveNow())}
         onExported={(number) => setVersion(number)}
       />
+      <ScheduleDialog open={scheduleOpen} onOpenChange={setScheduleOpen} postId={postId} />
     </div>
   );
 }
