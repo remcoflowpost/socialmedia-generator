@@ -6,13 +6,18 @@ from sqlalchemy import or_, select
 
 from app.api.deps import CurrentUser, DbSession
 from app.api.serializers import asset_out
-from app.domain.images import UnsupportedFile, font_mime, ingest_image
+from app.domain.fonts import FontRejected, inspect_font
+from app.domain.images import UnsupportedFile, ingest_image
 from app.models import Asset, Company
 from app.storage import get_storage
 
 router = APIRouter(prefix="/api/assets", tags=["assets"])
 
 MAX_UPLOAD_BYTES = 200 * 1024 * 1024
+ASSET_KINDS = ("image", "logo", "font", "background", "element")
+# Merkmateriaal: alleen admins, zodat de brand library consistent blijft.
+ADMIN_KINDS = ("logo", "font", "background", "element")
+ELEMENT_MIMES = ("image/png", "image/svg+xml")
 
 
 @router.get("")
@@ -22,14 +27,14 @@ def list_assets(
     company_id: str,
     q: str | None = None,
     origin: str | None = None,
-    kind: str | None = None,
+    kind: Annotated[list[str] | None, Query()] = None,
     tag: Annotated[list[str] | None, Query()] = None,
 ) -> list[dict]:
     stmt = select(Asset).where(Asset.company_id == company_id).order_by(Asset.created_at.desc())
     if origin:
         stmt = stmt.where(Asset.origin == origin)
     if kind:
-        stmt = stmt.where(Asset.kind == kind)
+        stmt = stmt.where(Asset.kind.in_(kind))
     if tag:
         stmt = stmt.where(Asset.tags.contains(tag))
     if q:
@@ -50,8 +55,12 @@ async def upload_asset(
     company = session.get(Company, company_id)
     if not company:
         raise HTTPException(404, "Onbekend bedrijf.")
-    if kind in ("logo", "font") and user.role != "admin":
-        raise HTTPException(403, "Alleen admins uploaden logo's en fonts.")
+    if kind not in ASSET_KINDS:
+        raise HTTPException(422, f"Onbekende soort {kind!r}.")
+    if kind in ADMIN_KINDS and user.role != "admin":
+        raise HTTPException(
+            403, "Alleen admins uploaden logo's, fonts, achtergronden en elementen."
+        )
     data = await file.read(MAX_UPLOAD_BYTES + 1)
     if len(data) > MAX_UPLOAD_BYTES:
         raise HTTPException(413, "Bestand is groter dan 200 MB.")
@@ -69,11 +78,29 @@ async def upload_asset(
     base = f"companies/{company.slug}/assets/{asset.id}"
     try:
         if kind == "font":
-            asset.mime = font_mime(asset.filename)
-            asset.storage_key = f"{base}{asset.filename[asset.filename.rfind('.') :].lower()}"
+            try:
+                font = inspect_font(data)
+            except FontRejected as error:
+                raise HTTPException(415, str(error)) from error
+            asset.mime = font.mime
+            asset.storage_key = f"{base}{font.extension}"
+            asset.provenance = {
+                **asset.provenance,
+                "fontFamily": font.family,
+                "fontSubfamily": font.subfamily,
+                "embedding": font.embedding,
+            }
             storage.write(asset.storage_key, data)
         else:
             image = ingest_image(data, asset.filename)
+            if kind == "element" and image.mime not in ELEMENT_MIMES:
+                raise HTTPException(
+                    415,
+                    "Elementen moeten transparant zijn: "
+                    "upload een PNG met transparantie of een SVG.",
+                )
+            if image.mime == "image/svg+xml" and image.converted:
+                asset.provenance = {**asset.provenance, "sanitized": True}
             asset.mime, asset.width, asset.height = image.mime, image.width, image.height
             asset.color_profile = image.color_profile
             asset.storage_key = f"{base}{image.extension}"
@@ -109,4 +136,13 @@ def asset_file(asset_id: str, _: CurrentUser, session: DbSession) -> FileRespons
     asset = session.get(Asset, asset_id)
     if not asset:
         raise HTTPException(404)
-    return FileResponse(get_storage().local_path(asset.storage_key), media_type=asset.mime)
+    headers = {"X-Content-Type-Options": "nosniff"}
+    if asset.mime == "image/svg+xml":
+        # Extra slot: ook als er ooit iets door de opschoning glipt, voert de browser het
+        # bij direct openen niet uit.
+        headers["Content-Security-Policy"] = (
+            "default-src 'none'; style-src 'unsafe-inline'; img-src data:"
+        )
+    return FileResponse(
+        get_storage().local_path(asset.storage_key), media_type=asset.mime, headers=headers
+    )

@@ -36,7 +36,7 @@ export function LibraryPage({ user }: { user: User }) {
       const form = new FormData();
       form.append("company_id", companyId);
       form.append("file", file);
-      form.append("kind", kind === "font" || kind === "logo" ? kind : "image");
+      form.append("kind", ["font", "logo", "background", "element"].includes(kind) ? kind : "image");
       form.append("tags", tags);
       try {
         await api.upload<Asset>("/api/assets", form);
@@ -64,6 +64,8 @@ export function LibraryPage({ user }: { user: User }) {
           <option value="image">Beelden</option>
           <option value="logo">Logo's</option>
           <option value="font">Fonts</option>
+          <option value="background">Achtergronden</option>
+          <option value="element">Elementen</option>
           <option value="">Alles</option>
         </Select>
       </div>
@@ -73,7 +75,7 @@ export function LibraryPage({ user }: { user: User }) {
           <Input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="project-x, still" />
         </div>
         <input ref={fileInput} type="file" multiple className="hidden" onChange={(e) => e.target.files && upload(e.target.files)} />
-        <Button onClick={() => fileInput.current?.click()} disabled={(kind === "logo" || kind === "font") && user.role !== "admin"}>
+        <Button onClick={() => fileInput.current?.click()} disabled={["logo", "font", "background", "element"].includes(kind) && user.role !== "admin"}>
           <Upload size={16} /> Uploaden
         </Button>
         {error && <p className="w-full text-sm text-danger">{error}</p>}

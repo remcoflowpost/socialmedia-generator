@@ -16,7 +16,7 @@ export interface Company {
 export interface Asset {
   id: string;
   companyId: string;
-  kind: "image" | "logo" | "font" | "reference";
+  kind: "image" | "logo" | "font" | "background" | "element" | "reference";
   filename: string;
   mime: string;
   width: number | null;

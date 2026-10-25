@@ -13,12 +13,18 @@ export function AssetPicker({
   onOpenChange,
   onPick,
   minWidth,
+  kinds = ["image"],
+  uploadKind = "image",
 }: {
   companyId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onPick: (asset: Asset) => void;
   minWidth?: number;
+  /** Welke soorten uit de bibliotheek te tonen, bijv. ["background", "image"]. */
+  kinds?: string[];
+  /** Soort voor een nieuwe upload; null = uploaden niet aanbieden (merkmateriaal, alleen via Bibliotheek). */
+  uploadKind?: string | null;
 }) {
   const queryClient = useQueryClient();
   const [q, setQ] = useState("");
@@ -26,8 +32,11 @@ export function AssetPicker({
   const [uploading, setUploading] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const assets = useQuery({
-    queryKey: ["assets", companyId, "image", q],
-    queryFn: () => api.get<Asset[]>(`/api/assets?company_id=${companyId}&kind=image${q ? `&q=${encodeURIComponent(q)}` : ""}`),
+    queryKey: ["assets", companyId, kinds.join(","), q],
+    queryFn: () =>
+      api.get<Asset[]>(
+        `/api/assets?company_id=${companyId}${kinds.map((k) => `&kind=${k}`).join("")}${q ? `&q=${encodeURIComponent(q)}` : ""}`,
+      ),
     enabled: open,
   });
 
@@ -37,7 +46,7 @@ export function AssetPicker({
     const form = new FormData();
     form.append("company_id", companyId);
     form.append("file", file);
-    form.append("kind", "image");
+    form.append("kind", uploadKind ?? "image");
     try {
       const asset = await api.upload<Asset>("/api/assets", form);
       await queryClient.invalidateQueries({ queryKey: ["assets", companyId] });
@@ -53,11 +62,17 @@ export function AssetPicker({
     <Dialog open={open} onOpenChange={onOpenChange} title="Beeld kiezen" wide>
       <div className="mb-4 flex gap-2">
         <Input placeholder="Zoek op bestandsnaam of tag" value={q} onChange={(e) => setQ(e.target.value)} />
-        <input ref={fileInput} type="file" accept="image/*,.heic" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
-        <Button variant="secondary" onClick={() => fileInput.current?.click()} disabled={uploading}>
-          <Upload size={16} /> {uploading ? "Uploaden..." : "Uploaden"}
-        </Button>
+        {uploadKind && (
+          <>
+            <input ref={fileInput} type="file" accept="image/*,.heic" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
+            <Button variant="secondary" onClick={() => fileInput.current?.click()} disabled={uploading}>
+              <Upload size={16} /> {uploading ? "Uploaden..." : "Uploaden"}
+            </Button>
+          </>
+        )}
       </div>
+      {!uploadKind && <p className="mb-3 text-xs text-muted">Merkmateriaal van dit bedrijf. Nieuwe achtergronden en elementen voegt een admin toe in de Bibliotheek.</p>}
+      {assets.data?.length === 0 && <p className="mb-3 text-sm text-muted">Nog niets in deze categorie.</p>}
       {error && <p className="mb-3 text-sm text-danger">{error}</p>}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {assets.data?.map((asset) => {

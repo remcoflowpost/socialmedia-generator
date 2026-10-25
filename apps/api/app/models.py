@@ -86,7 +86,9 @@ class Asset(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     company_id: Mapped[str | None] = mapped_column(ForeignKey("companies.id"), index=True)
-    kind: Mapped[str] = mapped_column(String(20))  # image, logo, font, reference
+    kind: Mapped[str] = mapped_column(
+        String(20)
+    )  # image, logo, font, background, element, reference
     filename: Mapped[str] = mapped_column(String(300))
     storage_key: Mapped[str] = mapped_column(String(500))
     original_key: Mapped[str | None] = mapped_column(String(500))

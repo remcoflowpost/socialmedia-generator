@@ -137,6 +137,8 @@ export function LayersPanel({
       })}
       <AssetPicker
         companyId={companyId}
+        kinds={pickerKinds(template.layers.find((l) => l.id === replacing)?.type)}
+        uploadKind={template.layers.find((l) => l.id === replacing)?.type === "element" ? null : "image"}
         open={replacing !== null}
         onOpenChange={(open) => !open && setReplacing(null)}
         onPick={(asset) => {
@@ -149,4 +151,11 @@ export function LayersPanel({
       />
     </div>
   );
+}
+
+/** Achtergrondlagen tonen merkachtergronden en gewone beelden; elementlagen alleen elementen. */
+function pickerKinds(type: string | undefined): string[] {
+  if (type === "background") return ["background", "image"];
+  if (type === "element") return ["element"];
+  return ["image"];
 }

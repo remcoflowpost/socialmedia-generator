@@ -168,6 +168,7 @@ export function EditorPage({ user }: { user: User }) {
             <div className="space-y-4">
               <ContentForm
                 fields={ctx.template.fields}
+                layerTypes={Object.fromEntries(ctx.template.layers.filter((l) => l.field).map((l) => [l.field as string, l.type]))}
                 content={document.content}
                 assets={assets}
                 companyId={ctx.post.companyId}

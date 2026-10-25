@@ -19,6 +19,9 @@ dependencies = [
     "pillow>=11.0",
     "pillow-heif>=0.21",
     "cryptography>=43",
+    "fonttools>=4.55",
+    "brotli>=1.1",
+    "defusedxml>=0.7",
 ]
 
 [dependency-groups]
@@ -36,3 +39,7 @@ select = ["E", "F", "I", "B", "UP", "SIM", "RET"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff.lint.per-file-ignores]
+# Testinvoer (aanvals-SVG's, fontbytes) is leesbaarder op één regel.
+"tests/test_asset_safety.py" = ["E501"]

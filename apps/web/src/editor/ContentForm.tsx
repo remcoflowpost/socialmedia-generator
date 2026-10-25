@@ -15,7 +15,10 @@ export function ContentForm({
   companyId,
   onChange,
   onAsset,
+  layerTypes = {},
 }: {
+  /** Laagtype per veldsleutel, zodat een achtergrondveld ook merkachtergronden toont. */
+  layerTypes?: Record<string, string>;
   fields: ContentField[];
   content: Content;
   assets: Record<string, Asset>;
@@ -86,6 +89,8 @@ export function ContentForm({
       })}
       <AssetPicker
         companyId={companyId}
+        kinds={picking && layerTypes[picking.key] === "background" ? ["background", "image"] : picking && layerTypes[picking.key] === "element" ? ["element"] : ["image"]}
+        uploadKind={picking && layerTypes[picking.key] === "element" ? null : "image"}
         open={picking !== null}
         onOpenChange={(open) => !open && setPicking(null)}
         minWidth={picking?.minWidth ?? undefined}

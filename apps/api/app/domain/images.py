@@ -11,10 +11,11 @@ from dataclasses import dataclass
 from PIL import Image, ImageCms, ImageOps
 from pillow_heif import register_heif_opener
 
+from app.domain.svg_sanitize import SvgRejected, sanitize_svg
+
 register_heif_opener()
 
 SVG_MIME = "image/svg+xml"
-FONT_TYPES = {".woff2": "font/woff2", ".woff": "font/woff", ".ttf": "font/ttf", ".otf": "font/otf"}
 MAX_PIXELS = 80_000_000
 
 
@@ -65,11 +66,13 @@ def _to_srgb(image: Image.Image) -> tuple[Image.Image, bool]:
 def ingest_image(data: bytes, filename: str) -> IngestedImage:
     lower = filename.lower()
     if lower.endswith(".svg"):
-        if b"<svg" not in data[:2048].lower():
-            raise UnsupportedFile("Dit SVG-bestand lijkt geen geldige SVG.")
-        if b"<script" in data.lower():
-            raise UnsupportedFile("SVG met scripts is niet toegestaan.")
-        return IngestedImage(data, SVG_MIME, ".svg", None, None, None, False)
+        # Actieve inhoud (scripts, event-attributen, foreignObject, externe verwijzingen)
+        # en DTD's worden geweigerd; overige onbekende inhoud gaat er via de allowlist uit.
+        try:
+            cleaned, removed = sanitize_svg(data, reject_active=True)
+        except SvgRejected as error:
+            raise UnsupportedFile(str(error)) from error
+        return IngestedImage(cleaned, SVG_MIME, ".svg", None, None, None, removed > 0)
 
     Image.MAX_IMAGE_PIXELS = MAX_PIXELS
     try:
@@ -109,10 +112,3 @@ def ingest_image(data: bytes, filename: str) -> IngestedImage:
         color_profile=profile,
         converted=converted or bool(profile and "srgb" not in profile.lower()),
     )
-
-
-def font_mime(filename: str) -> str:
-    for extension, mime in FONT_TYPES.items():
-        if filename.lower().endswith(extension):
-            return mime
-    raise UnsupportedFile("Alleen .woff2, .woff, .ttf of .otf zijn toegestaan als font.")
