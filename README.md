@@ -11,9 +11,13 @@ die in één keer exporteert naar alle platformformaten.
   kleedt de template aan. Merkkleuren en fonts staan nooit in een template.
 - Formaten worden **per formaat opgebouwd** met layoutregels binnen de safe zone, niet geschaald.
 - Kwaliteitschecks per formaat: resolutie, safe zones, tekstoverflow, contrast en embargo.
+- **Publiceren**: een goedgekeurde, geexporteerde versie inplannen op Facebook-pagina's en
+  Instagram-accounts van klanten, met weekplanning, slepen, automatisch versturen en een
+  publicatielog. Zie [Publiceren](#publiceren) en `docs/publiceren.md`.
 
-Stand: **fase 1** (fundament en stills). Generatie per laag (fase 2), video en statussen
-(fase 3) zijn nog niet gebouwd. Het datamodel houdt er wel rekening mee.
+Stand: **fase 1** (fundament en stills) plus **publiceren** (P1-P3). Generatie per laag
+(fase 2), video en verdere statussen (fase 3) zijn nog niet gebouwd. LinkedIn volgt na
+goedkeuring van de LinkedIn Community Management API.
 
 ## Requirements
 
@@ -82,6 +86,11 @@ alleen met `ENVIRONMENT=development`; de API weigert te starten met dev-login in
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google Workspace OAuth-client. |
 | `REMOTION_LICENSE_KEY` | Licentiesleutel van Remotion. Leeg is evaluatie. |
 | `RENDER_CONCURRENCY` | Aantal gelijktijdige renders in de render-service (standaard 2). |
+| `TOKEN_ENCRYPTION_KEY` | 32 bytes, base64 (`openssl rand -base64 32`). Versleutelt tokens van gekoppelde accounts (AES-256-GCM). Verplicht voor publiceren. Kwijt = alle accounts opnieuw koppelen. |
+| `META_APP_ID` / `META_APP_SECRET` | Meta-app (type Business, Facebook Login for Business). Redirect-URI: `${PUBLIC_URL}/api/publishing/connect/meta/callback`. |
+| `META_GRAPH_VERSION` | Graph API-versie, standaard `v26.0`. Meta stopt oude versies na ongeveer twee jaar. |
+| `ALLOW_SANDBOX_PROVIDER` | `true` zet het Sandbox-netwerk aan (testen zonder Meta). Nooit in productie. |
+| `PUBLIC_MEDIA_TTL_SECONDS` | Hoe lang de publieke beeldlink voor Instagram geldig is (standaard 1800). |
 
 Formaten staan in `config/formats.yaml`, inclusief safe zones en de bron per waarde.
 Templates staan als YAML in `templates/` en worden met `python -m app.seed` (opnieuw) geladen.
@@ -89,6 +98,57 @@ Templates staan als YAML in `templates/` en worden met `python -m app.seed` (opn
 Secrets staan alleen in `.env`, en `.env` staat in `.gitignore`. Open punt uit
 `flow-guidelines`: hoe `.env` zich verhoudt tot de Rez-omgeving is nog niet vastgelegd. Deze
 tool draait in docker buiten de pipeline, daarom staat `.env` naast `docker-compose.yml`.
+
+## Publiceren
+
+Ontwerp, regels en het exactly-once-mechanisme staan in `docs/publiceren.md`. In het kort:
+
+1. **Accounts koppelen** (Accounts, alleen admins): "Facebook en Instagram koppelen" logt in
+   bij Meta. Daarna kies je welke pagina's en Instagram-accounts bij dit bedrijf horen.
+   Instagram moet een Business- of Creator-account zijn, gekoppeld aan die Facebook-pagina.
+2. **Publicatietijden** per bedrijf instellen, in de tijdzone van dat bedrijf.
+3. **Inplannen** (editor, knop "Inplannen"): vereist een opgeslagen versie met een geslaagde
+   export, en klantakkoord voor precies die versie. Embargo, kwaliteitsfouten en
+   platformregels worden server-side afgedwongen, en vlak voor verzenden opnieuw gecontroleerd.
+4. De **worker** verstuurt elke 30 seconden wat aan de beurt is. Mislukt iets, dan staat de
+   reden in de Publicatielog, met een veilige knop om het opnieuw te proberen.
+
+**Meta-goedkeuring (buiten de code).** In development mode werkt koppelen alleen voor
+mensen met een rol op de Meta-app. Voor klantpagina's is App Review nodig voor
+`pages_show_list`, `pages_read_engagement`, `pages_manage_posts`, `instagram_basic`,
+`instagram_content_publish` en `business_management`, plus mogelijk bedrijfsverificatie.
+Reken op weken. Meta haalt Instagram-beelden op via een publieke URL, dus `PUBLIC_URL` moet
+vanaf internet bereikbaar zijn.
+
+**Bekende beperkingen**
+
+- `instagram/feed-3x4` kan niet via de API: Meta accepteert verhoudingen van 4:5 tot 1.91:1.
+- Facebook kent geen idempotency-key. Na een onzekere uitkomst zoekt de worker de post op
+  bijschrift in de recente posts van de pagina. Een handmatig geplaatste post met hetzelfde
+  bijschrift kan als "al gepubliceerd" worden gezien.
+- Paginatokens verlopen niet, maar worden ongeldig als iemand de app-toegang intrekt of zijn
+  wachtwoord wijzigt. Het account gaat dan op "opnieuw koppelen" en de planning pauzeert.
+- Maximaal 100 API-publicaties per Instagram-account per 24 uur (limiet van Meta).
+
+**Lokaal testen zonder Meta.** Zet `ALLOW_SANDBOX_PROVIDER=true`, voeg bij Accounts een
+Sandbox-account toe en plan in zoals gewoonlijk. Met `[sandbox:down]`, `[sandbox:timeout]`,
+`[sandbox:ratelimit]`, `[sandbox:reject]` of `[sandbox:auth]` in het bijschrift test je de
+foutpaden.
+
+## Merkmateriaal: fonts, achtergronden en elementen
+
+In de Bibliotheek uploaden admins per bedrijf: **Fonts** (WOFF2, WOFF, TTF, OTF),
+**Achtergronden** (beelden of SVG) en **Elementen** (transparante PNG of SVG). In de editor
+tonen achtergrondlagen de merkachtergronden plus gewone beelden; elementlagen tonen alleen
+elementen.
+
+- Fonts worden echt geopend (fontTools). Een font dat insluiten niet toestaat ("restricted
+  license embedding") wordt geweigerd. Dit vervangt geen licentiecontrole: ook zonder die vlag
+  kan een licentie gebruik op een server verbieden.
+- SVG's met actieve inhoud (scripts, event-attributen, `foreignObject`, externe of
+  `javascript:`-verwijzingen, DTD's) worden geweigerd. Overige onbekende inhoud (metadata
+  van ontwerpprogramma's) wordt verwijderd. SVG's worden geserveerd met een strikte
+  Content-Security-Policy.
 
 ## Remotion
 

@@ -140,9 +140,9 @@ Meta kent geen idempotency-key. Daarom:
 
 | Fase | Inhoud | Status |
 |---|---|---|
-| P1 | Backend: model, migratie, regels, sandbox- en Meta-adapter, publisher, API, tests | in deze branch |
-| P2 | Web: accounts koppelen, inplannen vanuit export, weekplanning met slepen, publicatielog | in deze branch |
-| P3 | Brand assets: achtergronden en elementen als soort plus brand-kit-bibliotheek, fontvalidatie, SVG-opschoning | in deze branch |
+| P1 | Backend: model, migratie, regels, sandbox- en Meta-adapter, publisher, API, tests | klaar |
+| P2 | Web: accounts koppelen, inplannen vanuit export, weekplanning met slepen, publicatielog | klaar |
+| P3 | Merkmateriaal: achtergronden en elementen als soort, fontvalidatie, SVG-opschoning | klaar (zonder brand-kit-wijziging: de bibliotheek is al per bedrijf) |
 | P4 | LinkedIn-adapter (na API-goedkeuring) | wacht op LinkedIn |
 | P5 | AI-generatie per laag: dit is fase 2 van de generator zelf (`GenerationProvider`, mock en daarna Higgsfield na akkoord). Niet in deze branch, om dubbel werk met die planning te voorkomen. | gepland |
 
@@ -156,3 +156,16 @@ Meta kent geen idempotency-key. Daarom:
 - **Publieke bereikbaarheid**: Instagram moet de afbeelding kunnen downloaden. Als de VM
   alleen intern bereikbaar is, is een publiek pad nodig, bijvoorbeeld een aparte route via de
   reverse proxy.
+
+## Gevonden tijdens de bouw
+
+- `client_approved` bestond in het model, maar niets in de API zette het. Er is nu een
+  akkoord per versie (`client_approved_version`).
+- `PUT /api/posts/{id}` verwacht snake_case (`embargo_until`), de rest van de API camelCase.
+  Onbekende velden worden stil genegeerd. Advies: één conventie en `extra="forbid"`.
+- De SVG-check bij upload liet `onload`, `foreignObject`, XXE en externe verwijzingen door;
+  fonts werden alleen op extensie gecontroleerd; `kind` werd niet gevalideerd. Alle drie
+  opgelost in P3.
+- De bestaande jobtabel heeft geen lease: een job die op `running` blijft hangen na een
+  crash van de worker, wordt nooit opnieuw opgepakt. Publicaties hebben wel een lease; voor
+  exports is dit nog open.
