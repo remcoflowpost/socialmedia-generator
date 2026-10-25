@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 
-from app.api import assets, auth, catalog, posts
+from app.api import assets, auth, catalog, posts, publishing
 from app.settings import get_settings
 
 
@@ -23,7 +23,7 @@ def create_app() -> FastAPI:
         https_only=settings.public_url.startswith("https://"),
         max_age=60 * 60 * 24 * 14,
     )
-    for module in (auth, catalog, assets, posts):
+    for module in (auth, catalog, assets, posts, publishing):
         app.include_router(module.router)
 
     @app.get("/api/health")

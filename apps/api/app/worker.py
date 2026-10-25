@@ -13,9 +13,11 @@ from app.db import SessionLocal
 from app.domain.export import export_version
 from app.jobs.queue import claim_next, fail, finish, set_progress
 from app.models import Job, Post, PostVersion
+from app.publishing.worker import publish_due
 
 log = logging.getLogger("worker")
 POLL_SECONDS = 1.0
+PUBLISH_EVERY_SECONDS = 30.0
 running = True
 
 
@@ -70,7 +72,16 @@ def main() -> None:
     signal.signal(signal.SIGTERM, _stop)
     signal.signal(signal.SIGINT, _stop)
     log.info("worker gestart")
+    next_publish = 0.0
     while running:
+        if time.monotonic() >= next_publish:
+            next_publish = time.monotonic() + PUBLISH_EVERY_SECONDS
+            try:
+                summary = publish_due()
+                if summary.claimed or summary.missed or summary.reclaimed:
+                    log.info("publicatieronde: %s", summary)
+            except Exception:  # noqa: BLE001 - de exportwachtrij moet blijven draaien
+                log.exception("publicatieronde mislukt; volgende ronde probeert opnieuw")
         if not run_once():
             time.sleep(POLL_SECONDS)
 

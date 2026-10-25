@@ -35,6 +35,17 @@ class Settings(BaseSettings):
     # URL waarop de render-service (Chromium) assets uit storage kan ophalen.
     render_asset_base_url: str = "http://localhost:3001/storage"
 
+    # Publiceren (docs/publiceren.md). 32 bytes, base64: openssl rand -base64 32
+    token_encryption_key: str = Field(default="", repr=False)
+    meta_app_id: str = ""
+    meta_app_secret: str = Field(default="", repr=False)
+    meta_graph_version: str = "v26.0"
+    provider_timeout_seconds: float = 15.0
+    # Sandbox-netwerk voor ontwikkeling en tests. Nooit aan in productie.
+    allow_sandbox_provider: bool = False
+    # Hoe lang een publieke beeld-URL voor Instagram geldig is.
+    public_media_ttl_seconds: int = 1800
+
     def allowed_users(self) -> dict[str, str]:
         users: dict[str, str] = {}
         for entry in filter(None, (part.strip() for part in self.allowlist.split(","))):
