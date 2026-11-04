@@ -10,6 +10,7 @@ import { EditorPage } from "./pages/EditorPage";
 import { LibraryPage } from "./pages/LibraryPage";
 import { LoginPage } from "./pages/LoginPage";
 import { PostsPage } from "./pages/PostsPage";
+import { PublishPage } from "./pages/PublishPage";
 
 export function App() {
   const queryClient = useQueryClient();
@@ -34,6 +35,7 @@ export function App() {
         <span className="font-semibold tracking-tight">Flow Social</span>
         <nav className="flex gap-1">
           <NavLink to="/posts" className={link}>Posts</NavLink>
+          <NavLink to="/publiceren" className={link}>Publiceren</NavLink>
           <NavLink to="/bibliotheek" className={link}>Bibliotheek</NavLink>
           {user.role === "admin" && <NavLink to="/admin" className={link}>Beheer</NavLink>}
         </nav>
@@ -49,6 +51,7 @@ export function App() {
           <Route path="/" element={<Navigate to="/posts" replace />} />
           <Route path="/posts" element={<PostsPage />} />
           <Route path="/posts/:postId" element={<EditorPage user={user} />} />
+          <Route path="/publiceren" element={<PublishPage />} />
           <Route path="/bibliotheek" element={<LibraryPage user={user} />} />
           <Route path="/admin" element={user.role === "admin" ? <AdminPage /> : <Navigate to="/posts" />} />
         </Routes>

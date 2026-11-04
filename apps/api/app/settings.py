@@ -35,6 +35,12 @@ class Settings(BaseSettings):
     # URL waarop de render-service (Chromium) assets uit storage kan ophalen.
     render_asset_base_url: str = "http://localhost:3001/storage"
 
+    # Publiceren: "mock" post nooit echt, "postiz" gebruikt een self-hosted Postiz.
+    publish_provider: Literal["mock", "postiz"] = "mock"
+    # Backend-URL van Postiz, bijv. https://postiz.example.nl/api
+    postiz_url: str = ""
+    postiz_api_key: str = Field(default="", repr=False)
+
     def allowed_users(self) -> dict[str, str]:
         users: dict[str, str] = {}
         for entry in filter(None, (part.strip() for part in self.allowlist.split(","))):

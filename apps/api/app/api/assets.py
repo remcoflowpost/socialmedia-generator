@@ -13,6 +13,8 @@ from app.storage import get_storage
 router = APIRouter(prefix="/api/assets", tags=["assets"])
 
 MAX_UPLOAD_BYTES = 200 * 1024 * 1024
+# Video wordt ongewijzigd bewaard, alleen om te publiceren (geen kleurconversie of crop).
+VIDEO_MIME = {".mp4": "video/mp4", ".mov": "video/quicktime"}
 
 
 @router.get("")
@@ -68,7 +70,14 @@ async def upload_asset(
     storage = get_storage()
     base = f"companies/{company.slug}/assets/{asset.id}"
     try:
-        if kind == "font":
+        if kind == "video":
+            suffix = asset.filename[asset.filename.rfind(".") :].lower()
+            if "." not in asset.filename or suffix not in VIDEO_MIME:
+                raise UnsupportedFile("Video moet .mp4 of .mov zijn.")
+            asset.mime = VIDEO_MIME[suffix]
+            asset.storage_key = f"{base}{suffix}"
+            storage.write(asset.storage_key, data)
+        elif kind == "font":
             asset.mime = font_mime(asset.filename)
             asset.storage_key = f"{base}{asset.filename[asset.filename.rfind('.') :].lower()}"
             storage.write(asset.storage_key, data)

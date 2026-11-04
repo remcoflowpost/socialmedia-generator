@@ -16,7 +16,7 @@ export interface Company {
 export interface Asset {
   id: string;
   companyId: string;
-  kind: "image" | "logo" | "font" | "reference";
+  kind: "image" | "logo" | "font" | "reference" | "video";
   filename: string;
   mime: string;
   width: number | null;
@@ -58,6 +58,7 @@ export interface Job {
   status: "queued" | "running" | "done" | "failed";
   progress: number;
   error: string | null;
+  createdAt?: string;
   result: {
     zipName: string;
     embargo: boolean;
@@ -65,6 +66,33 @@ export interface Job {
     version: number;
     files: { formatKey: string; name: string; severity: string | null }[];
   } | null;
+}
+
+export interface Channel {
+  id: string;
+  name: string;
+  platform: string;
+  picture: string | null;
+  disabled: boolean;
+  group: string | null;
+}
+
+export interface ChannelList {
+  provider: "mock" | "postiz";
+  matchedCompany: boolean;
+  channels: Channel[];
+}
+
+export type PublishMode = "now" | "schedule" | "draft";
+
+export interface PublishJob extends Omit<Job, "result"> {
+  result: { provider: string; group: string | null; posts: Record<string, unknown>[] } | null;
+  caption: string;
+  mode: PublishMode;
+  date: string;
+  provider: string;
+  channels: string[];
+  files: string[];
 }
 
 export interface QualitySummary {

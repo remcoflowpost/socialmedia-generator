@@ -115,6 +115,49 @@ pnpm exec tsx scripts/smoke.ts --safe-zones   # met zichtbare safe zones
 
 Remotion Studio voor de compositie zelf: `pnpm --filter @flow/compositions studio`.
 
+## Publiceren (Postiz)
+
+Onder **Publiceren** upload je een beeld of video (of kies je uit de bibliotheek of een
+afgeronde export), schrijf je de tekst, kies je kanalen en post je direct, plan je in of maak
+je een concept. Vanuit de exportdialoog opent de knop "Publiceren" dezelfde pagina met de
+exportbestanden klaar; per kanaal wordt het formaat van dat platform voorgeselecteerd.
+
+**Waarom Postiz.** De koppelingen met Instagram, Facebook, LinkedIn, TikTok enz. (OAuth,
+app-review per platform, token-refresh, planning en herhaalpogingen) zijn het dure deel.
+[Postiz](https://github.com/gitroomhq/postiz-app) doet dat al, is self-hosted en heeft een
+public API. Deze tool blijft eigenaar van ontwerp, kwaliteit en embargo; Postiz alleen van
+het versturen. Postiz is AGPL-3.0: we draaien het ongewijzigd als aparte dienst en praten er
+alleen via HTTP mee. Pas je Postiz zelf aan, dan gelden de AGPL-verplichtingen voor die
+wijzigingen.
+
+**Opzetten.**
+
+1. Draai Postiz apart volgens hun `docker-compose.yaml` (Postiz, Postgres, Redis en
+   Temporal). Postiz heeft een eigen publiek https-adres nodig voor de OAuth-callbacks van
+   de platformen, en per platform een developer-app (`FACEBOOK_APP_ID`, `LINKEDIN_CLIENT_ID`,
+   ...). Zet `DISABLE_REGISTRATION=true` na het aanmaken van het account.
+2. Koppel de social-accounts in Postiz. Maak per bedrijf een **klant** (customer) met
+   dezelfde naam of slug als het bedrijf hier; dan toont deze tool per bedrijf alleen diens
+   kanalen. Zonder overeenkomst zie je alle kanalen.
+3. Zet in `.env`: `PUBLISH_PROVIDER=postiz`, `POSTIZ_URL` (backend-URL, bijv.
+   `https://postiz.example.nl/api`) en `POSTIZ_API_KEY` (Settings > Public API), en herstart
+   `api` en `worker`.
+
+**Werking.** `POST /api/publish` controleert vooraf (kanaal bestaat, bestand hoort bij het
+bedrijf, geen kwaliteitsfouten in exportbestanden, embargo niet actief op het
+publicatiemoment; concepten mogen wel) en zet een `publish`-job klaar. De worker uploadt elk
+bestand een keer naar Postiz (`/public/v1/upload`) en maakt een post per kanaal
+(`/public/v1/posts`, met minimale platforminstellingen, bijv. Instagram post of story).
+Publish-jobs worden nooit automatisch herhaald: na een time-out is onbekend of Postiz de post
+al heeft, en een herhaling kan dubbel posten. Kijk dan in Postiz.
+
+Video (`.mp4`, `.mov`) wordt ongewijzigd bewaard, alleen om te publiceren. Platformen met
+verplichte keuzes zonder standaard (YouTube-titel, Pinterest-bord) geven een foutmelding van
+Postiz; die staat in de geschiedenis op de publicatiepagina.
+
+Standaard staat `PUBLISH_PROVIDER=mock`: er gaat niets naar buiten en de pagina toont
+"Testmodus". De tests gebruiken de mock en een nep-transport voor Postiz.
+
 ## Providers voor generatie (fase 2)
 
 De generatielaag is nog niet gebouwd. Het ontwerp volgens de spec: een `GenerationProvider`-
@@ -129,6 +172,7 @@ fase 2 er is, beschrijft deze sectie hoe je de mock en een echte provider aanzet
 apps/api            FastAPI, SQLAlchemy 2, Alembic, worker (python -m app.worker)
 apps/web            React + Vite, preview met @remotion/player
 apps/render         Node-service: Remotion renderStill, sRGB-JPEG, contrastmeting
+apps/api/app/publishing  Publicatieproviders: mock en Postiz
 packages/schema     Gegenereerde TypeScript-types (bron: apps/api/app/schema)
 packages/layout     Layout-engine: safe area, anchors, crop met focuspunt, tekst-fit, checks
 packages/compositions  React-compositie, gedeeld door preview en export

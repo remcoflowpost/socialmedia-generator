@@ -1,6 +1,7 @@
 import type { Format, LayoutReport } from "@flow/schema";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, Download } from "lucide-react";
+import { AlertTriangle, Download, Send } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/card";
@@ -138,9 +139,14 @@ export function ExportDialog({
               </p>
               {done && job.data.result && (
                 <div className="space-y-2">
-                  <a href={`/api/jobs/${jobId}/download`} className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
-                    <Download size={16} /> {job.data.result.zipName}
-                  </a>
+                  <div className="flex flex-wrap gap-2">
+                    <a href={`/api/jobs/${jobId}/download`} className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
+                      <Download size={16} /> {job.data.result.zipName}
+                    </a>
+                    <Link to={`/publiceren?post=${postId}&job=${jobId}`} className="inline-flex items-center gap-2 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm font-medium">
+                      <Send size={16} /> Publiceren
+                    </Link>
+                  </div>
                   <ul className="space-y-1 text-xs">
                     {job.data.result.files.map((file) => (
                       <li key={file.name} className="flex items-center gap-2">
