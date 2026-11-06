@@ -11,8 +11,10 @@ import traceback
 
 from app.db import SessionLocal
 from app.domain.export import export_version
+from app.domain.publish import run_publication
 from app.jobs.queue import claim_next, fail, finish, set_progress
 from app.models import Job, Post, PostVersion
+from app.publishing import get_provider
 
 log = logging.getLogger("worker")
 POLL_SECONDS = 1.0
@@ -40,7 +42,13 @@ def handle_export(session, job: Job) -> dict:
     )
 
 
-HANDLERS = {"export": handle_export}
+def handle_publish(session, job: Job) -> dict:
+    return run_publication(job.payload, get_provider())
+
+
+HANDLERS = {"export": handle_export, "publish": handle_publish}
+# Jobs met effect buiten de tool worden nooit automatisch herhaald.
+NO_RETRY = {"publish"}
 
 
 def run_once() -> bool:
@@ -58,6 +66,7 @@ def run_once() -> bool:
                 session,
                 session.merge(job),
                 f"{type(error).__name__}: {error}\n{traceback.format_exc(limit=3)}",
+                retry=job.type not in NO_RETRY,
             )
             return True
         finish(session, job, result)

@@ -119,3 +119,104 @@ def test_export_creates_version_and_job(client) -> None:
     job = client.post(f"/api/posts/{post['id']}/export", json={}).json()
     assert job["status"] == "queued"
     assert client.get(f"/api/posts/{post['id']}").json()["currentVersion"] == 1
+
+
+def test_upload_video_and_publish_via_mock(client) -> None:
+    import io
+
+    from PIL import Image
+
+    from app.worker import run_once
+
+    login(client, "editor@example.test")
+    company = client.get("/api/companies").json()[0]
+    buffer = io.BytesIO()
+    Image.new("RGB", (1080, 1080), "#224488").save(buffer, "JPEG")
+    image = client.post(
+        "/api/assets",
+        data={"company_id": company["id"], "kind": "image"},
+        files={"file": ("post.jpg", buffer.getvalue(), "image/jpeg")},
+    ).json()
+    video = client.post(
+        "/api/assets",
+        data={"company_id": company["id"], "kind": "video"},
+        files={"file": ("clip.mp4", b"\x00\x00\x00\x18ftypmp42", "video/mp4")},
+    )
+    assert video.status_code == 200, video.text
+    assert video.json()["mime"] == "video/mp4"
+    bad = client.post(
+        "/api/assets",
+        data={"company_id": company["id"], "kind": "video"},
+        files={"file": ("clip.avi", b"x", "video/x-msvideo")},
+    )
+    assert bad.status_code == 415
+
+    channels = client.get(f"/api/publish/channels?company_id={company['id']}").json()
+    assert channels["provider"] == "mock"
+    ids = [c["id"] for c in channels["channels"]]
+    job = client.post(
+        "/api/publish",
+        json={
+            "company_id": company["id"],
+            "caption": "Nieuwe post",
+            "mode": "now",
+            "channels": [
+                {"channel_id": ids[0], "media": [{"asset_id": image["id"]}]},
+                {"channel_id": ids[1], "media": [{"asset_id": video.json()["id"]}]},
+            ],
+        },
+    )
+    assert job.status_code == 200, job.text
+    while run_once():
+        pass
+    done = client.get(f"/api/jobs/{job.json()['id']}").json()
+    assert done["status"] == "done", done
+    assert len(done["result"]["posts"]) == 2
+    history = client.get(f"/api/publish/history?company_id={company['id']}").json()
+    assert history[0]["files"] == ["clip.mp4", "post.jpg"]
+
+
+def test_publish_rejects_unknown_channel_past_date_and_embargo(client) -> None:
+    from datetime import UTC, datetime, timedelta
+
+    from app.db import SessionLocal
+    from app.models import Job, Post
+
+    login(client, "editor@example.test")
+    post = first_post(client, "bedrijf-c", "project_announcement")
+    base = {"company_id": post["companyId"], "caption": "x"}
+    unknown = client.post("/api/publish", json=base | {"channels": [{"channel_id": "nope"}]})
+    assert unknown.status_code == 404
+    past = client.post(
+        "/api/publish",
+        json=base
+        | {
+            "mode": "schedule",
+            "scheduled_at": "2020-01-01T10:00:00Z",
+            "channels": [{"channel_id": "mock-instagram"}],
+        },
+    )
+    assert past.status_code == 422
+
+    with SessionLocal() as session:
+        row = session.get(Post, post["id"])
+        row.embargo_until = datetime.now(UTC) + timedelta(days=2)
+        export = Job(
+            type="export",
+            status="done",
+            payload={"postId": post["id"]},
+            result={
+                "files": [
+                    {"formatKey": "instagram/feed-square", "key": "x.jpg", "name": "EMBARGO_x.jpg"}
+                ]
+            },
+        )
+        session.add(export)
+        session.commit()
+        export_id = export.id
+    media = [{"export_job_id": export_id, "file": "EMBARGO_x.jpg"}]
+    channel = [{"channel_id": "mock-instagram", "media": media}]
+    blocked = client.post("/api/publish", json=base | {"channels": channel})
+    assert blocked.status_code == 409
+    draft = client.post("/api/publish", json=base | {"mode": "draft", "channels": channel})
+    assert draft.status_code == 200, draft.text

@@ -36,7 +36,7 @@ export function LibraryPage({ user }: { user: User }) {
       const form = new FormData();
       form.append("company_id", companyId);
       form.append("file", file);
-      form.append("kind", kind === "font" || kind === "logo" ? kind : "image");
+      form.append("kind", kind === "font" || kind === "logo" ? kind : file.type.startsWith("video/") ? "video" : "image");
       form.append("tags", tags);
       try {
         await api.upload<Asset>("/api/assets", form);
@@ -62,6 +62,7 @@ export function LibraryPage({ user }: { user: User }) {
         </Select>
         <Select className="w-32" value={kind} onChange={(e) => setKind(e.target.value)}>
           <option value="image">Beelden</option>
+          <option value="video">Video</option>
           <option value="logo">Logo's</option>
           <option value="font">Fonts</option>
           <option value="">Alles</option>
@@ -83,6 +84,8 @@ export function LibraryPage({ user }: { user: User }) {
           <button key={asset.id} className="text-left" onClick={() => setSelected(asset)}>
             {asset.kind === "font" ? (
               <div className="flex aspect-video items-center justify-center rounded border border-border bg-surface-2 text-2xl">Aa</div>
+            ) : asset.kind === "video" ? (
+              <video src={asset.url} muted preload="metadata" className="aspect-video w-full rounded border border-border bg-surface-2 object-contain" />
             ) : (
               <img src={asset.url} alt="" className="aspect-video w-full rounded border border-border bg-surface-2 object-contain" />
             )}
@@ -97,7 +100,8 @@ export function LibraryPage({ user }: { user: User }) {
       <Dialog open={selected !== null} onOpenChange={(open) => !open && setSelected(null)} title={selected?.filename ?? ""} wide>
         {selected && (
           <div className="grid gap-4 md:grid-cols-2">
-            {selected.kind !== "font" && <img src={selected.url} alt="" className="w-full rounded border border-border" />}
+            {selected.kind === "video" && <video src={selected.url} controls className="w-full rounded border border-border" />}
+            {!["font", "video"].includes(selected.kind) && <img src={selected.url} alt="" className="w-full rounded border border-border" />}
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
               <dt className="text-muted">Afmetingen</dt><dd>{selected.width ? `${selected.width}x${selected.height}px` : "vector of font"}</dd>
               <dt className="text-muted">Type</dt><dd>{selected.mime}</dd>

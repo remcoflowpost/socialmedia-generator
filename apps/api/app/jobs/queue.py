@@ -46,10 +46,13 @@ def finish(session: Session, job: Job, result: dict[str, Any]) -> None:
     session.commit()
 
 
-def fail(session: Session, job: Job, error: str) -> None:
+def fail(session: Session, job: Job, error: str, retry: bool = True) -> None:
+    """retry=False voor jobs met effect buiten de tool (publiceren): een tweede poging na een
+    time-out kan dubbel posten."""
     job.error = error
     job.finished_at = datetime.now(UTC)
-    job.status = "queued" if job.attempts < MAX_ATTEMPTS and _retryable(error) else "failed"
+    retry = retry and job.attempts < MAX_ATTEMPTS and _retryable(error)
+    job.status = "queued" if retry else "failed"
     session.commit()
 
 
